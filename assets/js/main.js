@@ -4,15 +4,7 @@ const ctx = canvas.getContext("2d");
 
 const game = new TetrisGame(ctx);
 
-game.start();
-
 window.addEventListener('load', () => {
-    const canvas = document.getElementById("game-canvas");
-
-    const ctx = canvas.getContext("2d");
-
-    const game = new TetrisGame(ctx);
-
     game.start();
   
     // iteration - 2: add key listeners to the game

@@ -3,12 +3,7 @@ class GhostedTetromino {
         this.controller  = controller;
         this.playfield = playfield;
         this.position = new Vector2D(0,0);
-        this.blocks = [];
-    }
-
-    init() {
         this.blocks = this.controller.blocks;
-        this.updatePosition();
     }
 
     draw() {

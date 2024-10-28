@@ -9,7 +9,7 @@ class TetrisGame {
         
         this.tetrominosStack = [];
         this.playField = new PlayField(this.ctx);
-        this.tetrominoController = new TetrominoController(tetrominoTypes.Z, this.playField);
+        this.tetrominoController = undefined;
 
         this.currentTime = 0;
     }
@@ -18,7 +18,9 @@ class TetrisGame {
         this.isRunning = true;
 
         this.playField.init();
-        this.tetrominoController.init();
+
+        this.fillTetrominosStack();
+        this.updateTetrominoFromStack();
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
@@ -76,6 +78,37 @@ class TetrisGame {
         this.playField.draw(this.ctx);
         this.tetrominoController.draw();
         this.playField.drawBorder(this.ctx);
+    }
+
+    fillTetrominosStack() {
+        const tetrominoKeys = Object.keys(tetrominoTypes);
+
+        for (let i = tetrominoKeys.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+
+            const temp = tetrominoKeys[i];
+            tetrominoKeys[i] = tetrominoKeys[j];
+            tetrominoKeys[j] = temp;
+        }
+
+        this.tetrominosStack = tetrominoKeys;
+    }
+
+    updateTetrominoFromStack() {
+        if(!this.tetrominoController) {
+            const tetromino = this.tetrominosStack.pop();
+            this.tetrominoController = new TetrominoController(this, tetrominoTypes[tetromino], this.playField);
+        } else {
+            this.tetrominoController = new TetrominoController(this, tetrominoTypes[this.nextTetromino], this.playField);
+        }
+
+        this.tetrominoController.init();
+
+        this.nextTetromino = this.tetrominosStack.pop();
+
+        if(this.tetrominosStack.length === 0) {
+            this.fillTetrominosStack();
+        }
     }
 
 }

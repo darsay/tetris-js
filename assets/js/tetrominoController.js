@@ -1,5 +1,6 @@
 class TetrominoController {
-    constructor(tetromino, playfield) {
+    constructor(game, tetromino, playfield) {
+        this.game = game;
         this.tetromino = tetromino;
         this.currentRotation = 0;
         this.position = new Vector2D(0,0);
@@ -15,14 +16,15 @@ class TetrominoController {
         this.isDropPressed  = false;
 
 
-        this.ghostedTetromino = new GhostedTetromino(this, playfield);
+        
     }
 
     init() {
         this.position = new Vector2D((this.playfield.playfieldWidth / 2) - 1, 0);
         this.blocks = this.tetromino.rotations[0];
 
-        this.ghostedTetromino.init();
+        this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
+        this.ghostedTetromino.updatePosition();
         this.currentTime = 0;
     }
 
@@ -42,7 +44,7 @@ class TetrominoController {
             this.currentTime = 0;          
 
             if(!this.moveDown()) {
-                this.init();
+                this.game.updateTetrominoFromStack();
             }
         }
     }
@@ -63,7 +65,7 @@ class TetrominoController {
                 break;
             case KEY_DOWN:
                     if(!this.moveDown()) {
-                        this.init();
+                        this.game.updateTetrominoFromStack();
                     }
                 break;
             case KEY_SPACE:
@@ -168,6 +170,6 @@ class TetrominoController {
     drop() {
         this.position = this.ghostedTetromino.position;
         this.playfield.placeTetromino(this);
-        this.init();
+        this.game.updateTetrominoFromStack();
     }
 }

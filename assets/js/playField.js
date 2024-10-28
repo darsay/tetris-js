@@ -38,8 +38,7 @@ class PlayField {
         for (let i = 0; i <  this.playfieldWidth; i++) {
             this.cells.push([]);
             for(let j = 0; j < this.playfieldHeight; j++) {
-                this.cells[i].push( {isFilled : j > 15, color: j%2 ?  'blue' : 'red'} );
-
+                this.cells[i].push( {isFilled : false, color: undefined} );
             }
         }
     }

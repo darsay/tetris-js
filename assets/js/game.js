@@ -9,9 +9,8 @@ class TetrisGame {
         
         this.tetrominosStack = [];
         this.playField = new PlayField(this.ctx);
-        this.tetrominoController = new TetrominoController(tetrominoTypes.I, this.playField);
+        this.tetrominoController = new TetrominoController(tetrominoTypes.Z, this.playField);
 
-        this.timeToFall = 2;
         this.currentTime = 0;
     }
 
@@ -68,13 +67,7 @@ class TetrisGame {
 
         this.tetrominoController.update(deltaTime);
 
-        if(this.currentTime > this.timeToFall) {
-            this.currentTime = 0;          
-
-            if(!this.tetrominoController.moveDown()) {
-                this.tetrominoController.init();
-            }
-        }
+        this.tetrominoController.update(deltaTime);
     }
 
     draw() {

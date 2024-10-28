@@ -1,5 +1,6 @@
 const FRAME_RATE = 60;
 
+const KEY_SPACE = 32;
 const KEY_LEFT = 37;
 const KEY_UP = 38;
 const KEY_RIGHT = 39;

@@ -8,9 +8,12 @@ class TetrominoController {
 
         this.inputRate = 0.3;
         this.currentTime = 0;
+        this.timeToFall = 2;
 
         this.isRotationPressed = false;
         this.isDownPressed = false;
+        this.isDropPressed  = false;
+
 
         this.ghostedTetromino = new GhostedTetromino(this, playfield);
     }
@@ -20,6 +23,7 @@ class TetrominoController {
         this.blocks = this.tetromino.rotations[0];
 
         this.ghostedTetromino.init();
+        this.currentTime = 0;
     }
 
     draw() {
@@ -33,6 +37,14 @@ class TetrominoController {
 
     update(deltatime) {
         this.currentTime += deltatime;
+
+        if(this.currentTime > this.timeToFall) {
+            this.currentTime = 0;          
+
+            if(!this.moveDown()) {
+                this.init();
+            }
+        }
     }
 
     onKeyDownEvent(e) {
@@ -50,11 +62,14 @@ class TetrominoController {
                 }
                 break;
             case KEY_DOWN:
-                    this.isDownPressed = true;
                     if(!this.moveDown()) {
                         this.init();
                     }
                 break;
+            case KEY_SPACE:
+                this.isDropPressed = true;
+                this.drop();
+
         }
     }
 
@@ -63,8 +78,8 @@ class TetrominoController {
             case KEY_UP:
                 this.isRotationPressed = false;
                 break;
-            case KEY_DOWN:
-                break;
+            case KEY_SPACE:
+                this.isDropPressed = false;
 
         }
     }
@@ -148,5 +163,11 @@ class TetrominoController {
 
         this.position.y++;
         return true;
+    }
+
+    drop() {
+        this.position = this.ghostedTetromino.position;
+        this.playfield.placeTetromino(this);
+        this.init();
     }
 }

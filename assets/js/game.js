@@ -12,6 +12,9 @@ class TetrisGame {
         this.tetrominoController = undefined;
 
         this.currentTime = 0;
+
+        this.soundManager = new SoundManager();
+        this.soundManager.setSong('assets/audio/music/tetris.mp3') ;
     }
 
     start() {
@@ -21,6 +24,8 @@ class TetrisGame {
 
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
+
+        this.soundManager.playSong();
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
@@ -66,8 +71,6 @@ class TetrisGame {
 
     update(deltaTime) {
         this.currentTime += deltaTime;
-
-        this.tetrominoController.update(deltaTime);
 
         this.tetrominoController.update(deltaTime);
     }

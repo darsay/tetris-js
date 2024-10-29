@@ -43,8 +43,11 @@ class TetrominoController {
         if(this.currentTime > this.timeToFall) {
             this.currentTime = 0;          
 
-            if(!this.moveDown()) {
+            if(!this.canMoveDown()) {
+                this.placeTetromino();
                 this.game.updateTetrominoFromStack();
+            } else {
+                this.moveDown();
             }
         }
     }
@@ -64,8 +67,11 @@ class TetrominoController {
                 }
                 break;
             case KEY_DOWN:
-                    if(!this.moveDown()) {
+                    if(!this.canMoveDown()) {
+                        this.placeTetromino();
                         this.game.updateTetrominoFromStack();
+                    } else {
+                        this.moveDown();
                     }
                 break;
             case KEY_SPACE:
@@ -88,7 +94,6 @@ class TetrominoController {
 
     canMovePiece() {
         if(this.currentTime  > this.inputRate) {
-            console.log("Nos fuimooo00");
             this.currentTime = 0;
             return true;
         }
@@ -132,6 +137,10 @@ class TetrominoController {
             }
         }
 
+        if(!this.canMoveDown()) {
+            this.currentTime = 0;
+        }
+
         this.position.x--;
         this.ghostedTetromino.updatePosition();
         return true;
@@ -149,27 +158,38 @@ class TetrominoController {
 
         this.position.x++;
         this.ghostedTetromino.updatePosition();
+
+        if(!this.canMoveDown()) {
+            this.currentTime = 0;
+        }
+
         return true;
     }
 
-    moveDown() {
+    canMoveDown() {
         for(let i = 0; i < this.blocks.length; i++) {
             const gridPos = Vector2D.add(this.blocks[i], this.position);
             const nextPos = new Vector2D(gridPos.x, gridPos.y+1);
 
             if(nextPos.y > this.playfield.playfieldHeight - 1 || this.playfield.cells[nextPos.x][nextPos.y].isFilled) {
-                this.playfield.placeTetromino(this);
                 return false;
             }
         }
 
-        this.position.y++;
         return true;
+    }
+
+    moveDown() {
+        this.position.y++;
+    }
+
+    placeTetromino() {
+        this.playfield.placeTetromino(this);
     }
 
     drop() {
         this.position = this.ghostedTetromino.position;
-        this.playfield.placeTetromino(this);
+        this.placeTetromino();
         this.game.updateTetrominoFromStack();
     }
 }

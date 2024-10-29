@@ -119,6 +119,55 @@ class PlayField {
             this.cells[gridPos.x][gridPos.y].isFilled = true;
             this.cells[gridPos.x][gridPos.y].color = tetrominoController.tetromino.color;
         });
+
+        this.checkLines();
+    }
+
+    checkLines() {
+        let lineCount = 0;
+        const linesToClear = [];
+
+        for(let i = 0; i < this.playfieldHeight; i++) {
+            let isLineFull = true;
+
+            for(let j = 0; j < this.playfieldWidth; j++) {
+                if(!this.cells[j][i].isFilled) {
+                    isLineFull = false;
+                    break;
+                }
+            }
+
+            if(isLineFull) {
+                linesToClear.push(i);
+                this.clearLine(i);
+                lineCount++;
+            }
+        }
+
+        if(linesToClear.length > 0) {
+            linesToClear.forEach(l => this.updateCellsAfterLine(l));
+        }
+    }
+
+    clearLine(line) {
+        for(let i = 0; i < this.playfieldWidth; i++) {
+            this.cells[i][line].isFilled = false;
+        }
+    }
+
+    updateCellsAfterLine(line) {
+        console.log(line);
+
+        for(let i = line; i > 1; i--) {
+            for(let j = 0; j < this.playfieldWidth; j++) {
+                console.log
+                if(this.cells[j][i-1].isFilled) {
+                    this.cells[j][i].isFilled = true;
+                    this.cells[j][i].color = this.cells[j][i-1].color;
+                    this.cells[j][i-1].isFilled = false;
+                }
+            }
+        }
     }
     
 }

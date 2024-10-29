@@ -26,6 +26,18 @@ const tetrominoTypes = {
                 new Vector2D(2, 0),
             ],
             [
+                new  Vector2D(1, 0),
+                new  Vector2D(1, 1),
+                new  Vector2D(1, 2),
+                new  Vector2D(1, 3)
+            ],
+            [
+                new Vector2D(-1, 1),
+                new Vector2D(0, 1),
+                new Vector2D(1, 1),
+                new Vector2D(2, 1),
+            ],
+            [
                 new  Vector2D(0, 0),
                 new  Vector2D(0, 1),
                 new  Vector2D(0, 2),
@@ -40,18 +52,6 @@ const tetrominoTypes = {
                 new Vector2D(-1, 0),
                 new Vector2D(0, 0),
                 new Vector2D(1, 0),
-                new Vector2D(1, 1)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(0, -1),
-                new Vector2D(0, 1),
-                new Vector2D(-1, 1)
-            ],
-            [
-                new Vector2D(-1, 0),
-                new Vector2D(0, 0),
-                new Vector2D(1, 0),
                 new Vector2D(-1, -1)
             ],
             [
@@ -59,7 +59,20 @@ const tetrominoTypes = {
                 new Vector2D(0, 1),
                 new Vector2D(0, -1),
                 new Vector2D(1, -1)
+            ],
+            [
+                new Vector2D(-1, 0),
+                new Vector2D(0, 0),
+                new Vector2D(1, 0),
+                new Vector2D(1, 1)
+            ],
+            [
+                new Vector2D(0, 0),
+                new Vector2D(0, -1),
+                new Vector2D(0, 1),
+                new Vector2D(-1, 1)
             ]
+            
         ]
     },
     L: {
@@ -68,26 +81,25 @@ const tetrominoTypes = {
             [
                 new Vector2D(-1, 0),
                 new Vector2D(0, 0),
-                new Vector2D(-1, 1),
-                new Vector2D(1, 0)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(0, 1),
-                new Vector2D(0, -1),
-                new Vector2D(1, 1)
-            ],
-            [
-                new Vector2D(-1, 0),
-                new Vector2D(0, 0),
                 new Vector2D(1, 0),
                 new Vector2D(1, -1)
             ],
             [
                 new Vector2D(0, 0),
                 new Vector2D(0, -1),
-                new Vector2D(-1, -1),
-                new Vector2D(0, 1)
+                new Vector2D(0, 1),
+                new Vector2D(1, 1)
+            ],[
+                new Vector2D(0, 0),
+                new Vector2D(1, 0),
+                new Vector2D(-1, 0),
+                new Vector2D(-1, 1)
+            ],
+            [
+                new Vector2D(0, 0),
+                new Vector2D(0, 1),
+                new Vector2D(0, -1),
+                new Vector2D(-1, -1)
             ]
         ]
     },
@@ -97,8 +109,8 @@ const tetrominoTypes = {
             [
                 new Vector2D(0, 0),
                 new Vector2D(1, 0),
-                new Vector2D(0, 1),
-                new Vector2D(1, 1)
+                new Vector2D(0, -1),
+                new Vector2D(1, -1)
             ]
         ]
     },
@@ -107,27 +119,27 @@ const tetrominoTypes = {
         rotations: [
             [
                 new Vector2D(0, 0),
+                new Vector2D(-1, 0),
+                new Vector2D(0, -1),
+                new Vector2D(1, -1)
+            ],
+            [
+                new Vector2D(0, 0),
                 new Vector2D(1, 0),
+                new Vector2D(0, -1),
+                new Vector2D(1, 1)
+            ],
+            [
+                new Vector2D(0, 0),
                 new Vector2D(0, 1),
+                new Vector2D(1, 0),
                 new Vector2D(-1, 1)
             ],
             [
                 new Vector2D(0, 0),
-                new Vector2D(0, 1),
                 new Vector2D(-1, 0),
+                new Vector2D(0, 1),
                 new Vector2D(-1, -1)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(0, -1),
-                new Vector2D(1, -1),
-                new Vector2D(-1, 0)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(0, -1),
-                new Vector2D(1, 0),
-                new Vector2D(1, 1)
             ]
         ]
     },
@@ -136,9 +148,9 @@ const tetrominoTypes = {
         rotations : [
             [
                 new Vector2D(0, 0),
-                new Vector2D(0, 1),
-                new Vector2D(-1, 1),
-                new Vector2D(1, 1)
+                new Vector2D(0, -1),
+                new Vector2D(-1, 0),
+                new Vector2D(1, 0)
             ],
             [
                 new Vector2D(0, 0),
@@ -148,9 +160,9 @@ const tetrominoTypes = {
             ],
             [
                 new Vector2D(0, 0),
-                new Vector2D(0, 1),
                 new Vector2D(1, 0),
-                new Vector2D(-1, 0)
+                new Vector2D(-1, 0),
+                new Vector2D(0, 1)
             ],
             [
                 new Vector2D(0, 0),
@@ -165,27 +177,27 @@ const tetrominoTypes = {
         rotations: [
             [
                 new Vector2D(0, 0),
+                new Vector2D(0, -1),
+                new Vector2D(1, 0),
+                new Vector2D(-1, -1)
+            ],
+            [
+                new Vector2D(0, 0),
+                new Vector2D(1, 0),
+                new Vector2D(1, -1),
+                new Vector2D(0, 1)
+            ],
+            [
+                new Vector2D(0, 0),
                 new Vector2D(-1, 0),
                 new Vector2D(0, 1),
                 new Vector2D(1, 1)
             ],
             [
                 new Vector2D(0, 0),
-                new Vector2D(0, -1),
                 new Vector2D(-1, 0),
-                new Vector2D(-1, 1)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(1, 0),
                 new Vector2D(0, -1),
-                new Vector2D(-1, -1)
-            ],
-            [
-                new Vector2D(0, 0),
-                new Vector2D(1, 0),
-                new Vector2D(0, 1),
-                new Vector2D(1, -1)
+                new Vector2D(-1, 1)
             ]
         ]
     }

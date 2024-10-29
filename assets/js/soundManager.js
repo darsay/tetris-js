@@ -9,6 +9,6 @@ class SoundManager {
 
     playSong() {
         this.currentSong.volume = 0;
-        this.currentSong.play();
+        //this.currentSong.play();
     }
 }

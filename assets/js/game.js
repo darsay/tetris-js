@@ -1,6 +1,7 @@
 class TetrisGame {
-    constructor(ctx) {
+    constructor(ctx, ctxHold) {
         this.ctx = ctx;
+        this.ctxHold = ctxHold;
 
         this.previousUpdateTime = 0;
         this.previousDrawTime = 0;
@@ -10,6 +11,10 @@ class TetrisGame {
         this.tetrominosStack = [];
         this.playField = new PlayField(this.ctx);
         this.tetrominoController = undefined;
+        this.currentTetromino = undefined;
+
+        this.holdedTetromino = undefined;
+        this.alreadyHolded = false;
 
         this.currentTime = 0;
 
@@ -32,6 +37,13 @@ class TetrisGame {
 
     onKeyDownEvent(e) {
         this.tetrominoController.onKeyDownEvent(e);
+
+        if(e.keyCode === KEY_C) {
+            if(!this.alreadyHolded) {
+                this.hold();
+            }
+            
+        }
     }
 
     onKeyUpEvent(e) {
@@ -46,7 +58,7 @@ class TetrisGame {
 
         this.update(deltaTime);
 
-        if(timeStamp - this.previousDrawTime >= 1000 / FRAME_RATE) {
+        if(timeStamp - this.previousDrawTime >= (1000 / FRAME_RATE)) {
             this.draw();
             this.previousDrawTime = timeStamp;
         }
@@ -77,10 +89,17 @@ class TetrisGame {
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+
+        ctxHold.save();
+
+        ctxHold.fillStyle = 'black';
+        ctxHold.fillRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        
+        ctx.restore();
 
         this.playField.draw(this.ctx);
         this.tetrominoController.draw();
-        this.playField.drawBorder(this.ctx);
     }
 
     fillTetrominosStack() {
@@ -101,8 +120,10 @@ class TetrisGame {
         if(!this.tetrominoController) {
             const tetromino = this.tetrominosStack.pop();
             this.tetrominoController = new TetrominoController(this, tetrominoTypes[tetromino], this.playField);
+            this.currentTetromino = tetromino;
         } else {
             this.tetrominoController = new TetrominoController(this, tetrominoTypes[this.nextTetromino], this.playField);
+            this.currentTetromino = this.nextTetromino;
         }
 
         this.tetrominoController.init();
@@ -112,6 +133,25 @@ class TetrisGame {
         if(this.tetrominosStack.length === 0) {
             this.fillTetrominosStack();
         }
+   
+        this.alreadyHolded = false;
+    }
+
+    hold() {
+        let previousHoldedTetromino = this.holdedTetromino;
+
+        this.holdedTetromino = this.currentTetromino;
+
+        console.log(previousHoldedTetromino);
+
+        if(previousHoldedTetromino) {
+            this.tetrominoController = new TetrominoController(this, tetrominoTypes[previousHoldedTetromino], this.playField);
+            this.tetrominoController.init();
+        } else {
+            this.updateTetrominoFromStack();
+        }
+
+        this.alreadyHolded = true;
     }
 
 }

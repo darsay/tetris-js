@@ -37,6 +37,7 @@ class PlayField {
     initPlayField() {
         for (let i = 0; i <  this.playfieldWidth; i++) {
             this.cells.push([]);
+            this.cells[i].fill({isFilled : false, color: undefined})
             for(let j = 0; j < this.playfieldHeight; j++) {
                 this.cells[i].push( {isFilled : false, color: undefined} );
             }
@@ -45,8 +46,12 @@ class PlayField {
 
     draw(ctx) {
         // Draw Bg
+        ctx.save();
+
         ctx.fillStyle = 'black';
-        ctx.fillRect(this.x, this.y, this.width, this.height);    
+        ctx.fillRect(0, 0, this.width, this.height);
+        
+        ctx.restore();
 
         this.drawGrid(ctx);
         
@@ -58,17 +63,17 @@ class PlayField {
         ctx.strokeStyle = 'gray';
         ctx.lineWidth = this.gridTrace;
 
-        for (let i = this.y + this.cellSize; i < this.y + this.height; i+=this.cellSize) {
+        for (let i = this.cellSize; i < this.height; i+=this.cellSize) {
             ctx.beginPath();
-            ctx.moveTo(this.x, i);
-            ctx.lineTo(this.x + this.width, i);
+            ctx.moveTo(0, i);
+            ctx.lineTo(this.width, i);
             ctx.stroke();
         }
 
-        for (let i = this.x + this.cellSize; i < this.x + this.width; i+=this.cellSize) {
+        for (let i = this.cellSize; i < this.width; i+=this.cellSize) {
             ctx.beginPath();
-            ctx.moveTo(i, this.y);
-            ctx.lineTo(i, this.y+this.height);
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, this.height);
             ctx.stroke();
         }
     }
@@ -98,19 +103,13 @@ class PlayField {
             initialY,
             tileSize,
             tileSize,
-            this.x + (x * this.cellSize),
-            this.y +(y * this.cellSize),
+            x * this.cellSize,
+            y * this.cellSize,
             this.cellSize,
             this.cellSize
         )
     }
     
-
-    drawBorder(ctx) {
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = this.border;
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
-    }
 
     placeTetromino(tetrominoController) {
         tetrominoController.blocks.forEach(c => {

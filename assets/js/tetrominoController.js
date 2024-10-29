@@ -11,7 +11,9 @@ class TetrominoController {
         this.currentTime = 0;
         this.timeToFall = 2;
 
-        this.isRotationPressed = false;
+        this.isRotationRightPressed = false;
+        this.isRotationLeftPressed = false;
+        this.isHoldPressed = false;
         this.isDownPressed = false;
         this.isDropPressed  = false;
 
@@ -20,7 +22,7 @@ class TetrominoController {
     }
 
     init() {
-        this.position = new Vector2D((this.playfield.playfieldWidth / 2) - 1, 0);
+        this.position = new Vector2D((this.playfield.playfieldWidth / 2) - 1, 1);
         this.blocks = this.tetromino.rotations[0];
 
         this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
@@ -61,9 +63,15 @@ class TetrominoController {
                 this.moveRight();
                 break;
             case KEY_UP:
-                if(!this.isRotationPressed) {
-                    this.isRotationPressed = true;
-                    this.rotate();
+                if(!this.isRotationRightPressed) {
+                    this.isRotationRightPressed = true;
+                    this.rotate(1);
+                }
+                break;
+            case KEY_Z:
+                if(!this.isRotationLeftPressed) {
+                    this.isRotationLeftPressed = true;
+                    this.rotate(-1);
                 }
                 break;
             case KEY_DOWN:
@@ -84,7 +92,10 @@ class TetrominoController {
     onKeyUpEvent(e) {
         switch(e.keyCode) {
             case KEY_UP:
-                this.isRotationPressed = false;
+                this.isRotationRightPressed = false;
+                break;
+            case KEY_Z:
+                this.isRotationLeftPressed = false;
                 break;
             case KEY_SPACE:
                 this.isDropPressed = false;
@@ -101,8 +112,13 @@ class TetrominoController {
         return false;
     }
 
-    rotate() {
-        const tempRotation = (this.currentRotation + 1) % this.tetromino.rotations.length;
+    rotate(direction) {
+        let tempRotation = (this.currentRotation + direction) % this.tetromino.rotations.length;
+
+        
+        if(tempRotation < 0) {
+            tempRotation = this.tetromino.rotations.length-1;
+        }
 
         for(let i = 0; i < this.tetromino.rotations[tempRotation].length; i++) {
             const nextPos = Vector2D.add(this.tetromino.rotations[tempRotation][i], this.position);

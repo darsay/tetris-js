@@ -1,7 +1,8 @@
 class TetrisGame {
-    constructor(ctx, ctxHold) {
+    constructor(ctx, ctxHold, ctxNext) {
         this.ctx = ctx;
         this.ctxHold = ctxHold;
+        this.ctxNext = ctxNext;
 
         this.previousUpdateTime = 0;
         this.previousDrawTime = 0;
@@ -20,6 +21,8 @@ class TetrisGame {
 
         this.soundManager = new SoundManager();
         this.soundManager.setSong('assets/audio/music/tetris.mp3') ;
+
+        this.holdedTetrominoDisplay = new HoldedTetrominoDisplay();
     }
 
     start() {
@@ -90,16 +93,22 @@ class TetrisGame {
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        this.ctxNext.clearRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
 
         ctxHold.save();
 
         ctxHold.fillStyle = 'black';
         ctxHold.fillRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        ctxNext.fillRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
         
         ctx.restore();
 
+        
+
         this.playField.draw(this.ctx);
         this.tetrominoController.draw();
+
+        this.holdedTetrominoDisplay.draw(this.ctxHold);
     }
 
     fillTetrominosStack() {
@@ -142,8 +151,6 @@ class TetrisGame {
 
         this.holdedTetromino = this.currentTetromino;
 
-        console.log(previousHoldedTetromino);
-
         if(previousHoldedTetromino) {
             this.tetrominoController = new TetrominoController(this, tetrominoTypes[previousHoldedTetromino], this.playField);
             this.tetrominoController.init();
@@ -152,6 +159,7 @@ class TetrisGame {
         }
 
         this.alreadyHolded = true;
+        this.holdedTetrominoDisplay.setHoldedTetromino(tetrominoTypes[this.holdedTetromino]);
     }
 
 }

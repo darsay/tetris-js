@@ -8,12 +8,27 @@
     <link rel="stylesheet" href="assets/styles/styles.css">
 </head>
 <body>
-    <canvas id="hold-canvas" width=100 height="100"></canvas>
-    <canvas id="game-canvas" width=250 height="500"></canvas>
+    <div id="all-canvas-container">
+        <div id="hold-container">
+            <p>Holded</p>
+            <canvas id="hold-canvas" width=125 height=100></canvas>
+        </div>
+        
+        <div id="game-container">
+            <canvas id="game-canvas" width=250 height=500></canvas>
+        </div>
 
+        <div id="next-tetrominos-container">
+            <p>Next</p>
+            <canvas id="next-canvas" width=125 height=300></canvas>
+        </div>
+    </div>
+    
+    
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/constants.js"></script>
     <script src="assets/js/tetrominos.js"></script>
+    <script src="assets/js/holdedTetrominoDisplay.js"></script>
     <script src="assets/js/playField.js"></script>
     <script src="assets/js/ghostedTetromino.js"></script>
     <script src="assets/js/tetrominoController.js"></script>

@@ -1,3 +1,8 @@
 #game-canvas{
     background-color: black;
 }
+
+#all-canvas-container{
+    display: flex;
+    justify-content: flex-start;
+}

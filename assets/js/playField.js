@@ -3,26 +3,13 @@
 //     color ->  Color
 // }
 
-const BLOCKSIZE = 10;
-const PLAYFIELD_WIDTH = 10;
-const PLAYFIELD_HEIGHT = 20;
-
-
-
 class PlayField {
     constructor() {
         this.cells = []; // GRID
 
-        this.playfieldWidth = 10;
-        this.playfieldHeight = 20;
-        this.blockSize = 25;
+        this.width = PLAYFIELD_WIDTH *  BLOCKSIZE;
+        this.height = PLAYFIELD_HEIGHT * BLOCKSIZE;
 
-        this.x =  400-125;
-        this.y = 50;
-        this.width = this.playfieldWidth *  this.blockSize;
-        this.height = this.playfieldHeight * this.blockSize;
-
-        this.border = 5;
         this.gridTrace = 0.3;
         this.cellSize = this.width / PLAYFIELD_WIDTH;
 
@@ -35,10 +22,10 @@ class PlayField {
     }
 
     initPlayField() {
-        for (let i = 0; i <  this.playfieldWidth; i++) {
+        for (let i = 0; i < PLAYFIELD_WIDTH; i++) {
             this.cells.push([]);
             this.cells[i].fill({isFilled : false, color: undefined})
-            for(let j = 0; j < this.playfieldHeight; j++) {
+            for(let j = 0; j < PLAYFIELD_HEIGHT; j++) {
                 this.cells[i].push( {isFilled : false, color: undefined} );
             }
         }
@@ -79,8 +66,8 @@ class PlayField {
     }
    
     drawCells() {       
-        for(let i  = 0; i < this.playfieldHeight; i++) {
-            for(let j = 0; j <  this.playfieldWidth; j++) {
+        for(let i  = 0; i < PLAYFIELD_HEIGHT; i++) {
+            for(let j = 0; j <  PLAYFIELD_WIDTH; j++) {
                 const cell =  this.cells[j][i];
 
                 if (cell.isFilled) {
@@ -126,10 +113,10 @@ class PlayField {
         let lineCount = 0;
         const linesToClear = [];
 
-        for(let i = 0; i < this.playfieldHeight; i++) {
+        for(let i = 0; i < PLAYFIELD_HEIGHT; i++) {
             let isLineFull = true;
 
-            for(let j = 0; j < this.playfieldWidth; j++) {
+            for(let j = 0; j < PLAYFIELD_WIDTH; j++) {
                 if(!this.cells[j][i].isFilled) {
                     isLineFull = false;
                     break;
@@ -149,16 +136,14 @@ class PlayField {
     }
 
     clearLine(line) {
-        for(let i = 0; i < this.playfieldWidth; i++) {
+        for(let i = 0; i < PLAYFIELD_WIDTH; i++) {
             this.cells[i][line].isFilled = false;
         }
     }
 
     updateCellsAfterLine(line) {
-        console.log(line);
-
         for(let i = line; i > 1; i--) {
-            for(let j = 0; j < this.playfieldWidth; j++) {
+            for(let j = 0; j < PLAYFIELD_WIDTH; j++) {
                 console.log
                 if(this.cells[j][i-1].isFilled) {
                     this.cells[j][i].isFilled = true;

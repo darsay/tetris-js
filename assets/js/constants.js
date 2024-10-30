@@ -2,6 +2,10 @@ const FRAME_RATE = 60;
 
 // INPUT
 
+const BLOCKSIZE = 25;
+const PLAYFIELD_WIDTH = 10;
+const PLAYFIELD_HEIGHT = 20;
+
 const KEY_LEFT = 37;
 const KEY_UP = 38;
 const KEY_RIGHT = 39;

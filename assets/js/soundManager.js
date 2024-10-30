@@ -8,7 +8,10 @@ class SoundManager {
     }
 
     playSong() {
-        this.currentSong.volume = 0;
-        //this.currentSong.play();
+        if(this.currentSong) {
+            this.currentSong.volume = 0.01;
+            //this.currentSong.play();
+        }
+        
     }
 }

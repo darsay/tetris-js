@@ -1,10 +1,9 @@
-class HoldedTetrominoDisplay {
-    constructor() {
+class TetrominoDisplay {
+    constructor(offset) {
+        this.offset = offset;
+
         this.displayWidth = 5;
         this.displayHeight = 4;
-
-        this.width = this.displayWidth *  BLOCKSIZE;
-        this.height = this.displayHeight * BLOCKSIZE;
 
         this.border = 5;
         this.gridTrace = 0.3;
@@ -12,14 +11,14 @@ class HoldedTetrominoDisplay {
         this.tetrominoTileResource = new Image();
         this.tetrominoTileResource.src = '/assets/art/minos00.png';
 
-        this.holdedTetromino = undefined;
+        this.tetromino = undefined;
 
         this.drawOrigin = new Vector2D(0,0);
     }
 
     draw(ctx) {
-        if(this.holdedTetromino) {
-            this.holdedTetromino.rotations[0].forEach(b => this.drawBlock(ctx, b));
+        if(this.tetromino) {
+            this.tetromino.rotations[0].forEach(b => this.drawBlock(ctx, b));
         }
         
     }
@@ -33,19 +32,19 @@ class HoldedTetrominoDisplay {
         drawPos.y = b.y * BLOCKSIZE + this.drawOrigin.y;
 
         ctx.drawImage(this.tetrominoTileResource,
-            margin + (margin*2 + tileSize) * tetrominoColorsToIdx[this.holdedTetromino.color],
+            margin + (margin*2 + tileSize) * tetrominoColorsToIdx[this.tetromino.color],
             margin,
             tileSize,
             tileSize,
             drawPos.x,
-            drawPos.y,
+            drawPos.y + this.offset * this.displayHeight * BLOCKSIZE,
             BLOCKSIZE,
             BLOCKSIZE
         );
     }
 
     setHoldedTetromino(tetromino) {
-        this.holdedTetromino =  tetromino;
+        this.tetromino =  tetromino;
 
         this.setNewDrawOrigin();
     }
@@ -56,7 +55,7 @@ class HoldedTetrominoDisplay {
         let minY = Infinity;
         let maxY = -Infinity;
 
-        this.holdedTetromino.rotations[0].forEach(block => {
+        this.tetromino.rotations[0].forEach(block => {
             if (block.x < minX) minX = block.x;
             if (block.x > maxX) maxX = block.x;
             if (block.y < minY) minY = block.y;

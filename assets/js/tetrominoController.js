@@ -140,6 +140,9 @@ class TetrominoController {
 
         this.ghostedTetromino.blocks = this.blocks;
         this.ghostedTetromino.updatePosition();
+
+        SoundManager.playFx('assets/audio/sfx/rotate.ogg');
+
         return true;
     }
 
@@ -199,13 +202,19 @@ class TetrominoController {
         this.position.y++;
     }
 
-    placeTetromino() {
+    placeTetromino(isDrop = false) {
         this.playfield.placeTetromino(this);
+
+        if(!isDrop) {
+            SoundManager.playFx('assets/audio/sfx/place.ogg');
+        }
     }
 
     drop() {
         this.position = this.ghostedTetromino.position;
         this.placeTetromino();
         this.game.updateTetrominoFromStack();
+
+        SoundManager.playFx('assets/audio/sfx/drop.ogg');
     }
 }

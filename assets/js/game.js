@@ -19,10 +19,13 @@ class TetrisGame {
 
         this.currentTime = 0;
 
-        this.soundManager = new SoundManager();
-        this.soundManager.setSong('assets/audio/music/tetris.mp3') ;
+        this.holdedTetrominoDisplay = new TetrominoDisplay(0);
 
-        this.holdedTetrominoDisplay = new HoldedTetrominoDisplay();
+        this.nextTetrominoDisplay = [
+            new TetrominoDisplay(0),
+            new TetrominoDisplay(1),
+            new TetrominoDisplay(2)
+        ];
     }
 
     start() {
@@ -33,7 +36,8 @@ class TetrisGame {
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
 
-        this.soundManager.playSong();
+        SoundManager.setSong('assets/audio/music/tetris.mp3') ; 
+        SoundManager.playSong();
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
@@ -42,10 +46,7 @@ class TetrisGame {
         this.tetrominoController.onKeyDownEvent(e);
 
         if(e.keyCode === KEY_C) {
-            if(!this.alreadyHolded) {
-                this.hold();
-            }
-            
+            this.hold();        
         }
     }
 
@@ -69,20 +70,6 @@ class TetrisGame {
         requestAnimationFrame(this.gameLoop.bind(this));
     }
 
-    fillTetrominosStack() {
-        const aux = Array.from(tetrominoTypes.keys);
-
-        for(let i = keys.length-1;  i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const swap = aux[i];
-            aux[i] =  aux[j];
-            aux[j] =  swap;
-        }
-
-        this.aux.forEach(t => {
-            this.tetrominosStack.push(t);
-        });
-    }
 
     update(deltaTime) {
         this.currentTime += deltaTime;
@@ -109,6 +96,7 @@ class TetrisGame {
         this.tetrominoController.draw();
 
         this.holdedTetrominoDisplay.draw(this.ctxHold);
+        this.nextTetrominoDisplay.forEach(d => d.draw(this.ctxNext));
     }
 
     fillTetrominosStack() {
@@ -122,31 +110,41 @@ class TetrisGame {
             tetrominoKeys[j] = temp;
         }
 
-        this.tetrominosStack = tetrominoKeys;
+        this.tetrominosStack = tetrominoKeys.concat(this.tetrominosStack);
     }
 
     updateTetrominoFromStack() {
-        if(!this.tetrominoController) {
-            const tetromino = this.tetrominosStack.pop();
-            this.tetrominoController = new TetrominoController(this, tetrominoTypes[tetromino], this.playField);
-            this.currentTetromino = tetromino;
-        } else {
-            this.tetrominoController = new TetrominoController(this, tetrominoTypes[this.nextTetromino], this.playField);
-            this.currentTetromino = this.nextTetromino;
-        }
+        const tetromino = this.tetrominosStack.pop();
+        this.tetrominoController = new TetrominoController(this, tetrominoTypes[tetromino], this.playField);
+        this.currentTetromino = tetromino;
 
         this.tetrominoController.init();
 
-        this.nextTetromino = this.tetrominosStack.pop();
-
-        if(this.tetrominosStack.length === 0) {
+        if(this.tetrominosStack.length < 3) {
+            console.log("FILL!");
             this.fillTetrominosStack();
+            console.log(this.tetrominosStack);
         }
    
         this.alreadyHolded = false;
+
+        console.log(this.tetrominosStack);
+
+        for(let i = 0; i < this.nextTetrominoDisplay.length; i++) {
+            this.nextTetrominoDisplay[i].setHoldedTetromino(
+                tetrominoTypes [
+                    this.tetrominosStack[this.tetrominosStack.length - 1 - i
+                    ]
+                ]);
+        }
     }
 
     hold() {
+        if(this.alreadyHolded) {
+            SoundManager.playFx('assets/audio/sfx/cantHold.ogg');
+            return;
+        }
+
         let previousHoldedTetromino = this.holdedTetromino;
 
         this.holdedTetromino = this.currentTetromino;
@@ -160,6 +158,7 @@ class TetrisGame {
 
         this.alreadyHolded = true;
         this.holdedTetrominoDisplay.setHoldedTetromino(tetrominoTypes[this.holdedTetromino]);
+        SoundManager.playFx('assets/audio/sfx/hold.ogg');
     }
 
 }

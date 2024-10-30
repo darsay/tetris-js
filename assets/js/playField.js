@@ -132,6 +132,8 @@ class PlayField {
 
         if(linesToClear.length > 0) {
             linesToClear.forEach(l => this.updateCellsAfterLine(l));
+
+            SoundManager.playFx('assets/audio/sfx/line.ogg');
         }
     }
 

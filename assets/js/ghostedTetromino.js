@@ -10,7 +10,11 @@ class GhostedTetromino {
 
         this.blocks.forEach(c => {
             const gridPos = Vector2D.add(c, this.position);
-            this.playfield.drawCell(gridPos.x, gridPos.y, this.controller.tetromino.color, true);
+
+            if(gridPos.y >= 0)
+            {
+                this.playfield.drawCell(gridPos.x, gridPos.y, this.controller.tetromino.color, true);
+            }
         });
     }
 
@@ -22,7 +26,7 @@ class GhostedTetromino {
             for(let j = 0; j < this.controller.blocks.length; j++) {
                 let nextPos = Vector2D.add(Vector2D.add(this.controller.position, this.controller.blocks[j]), new Vector2D(0, i));
 
-                if(nextPos.y > PLAYFIELD_HEIGHT - 1 || this.playfield.cells[nextPos.x][nextPos.y].isFilled) {
+                if(nextPos.y>=0 && (nextPos.y > PLAYFIELD_HEIGHT - 1 || this.playfield.cells[nextPos.x][nextPos.y].isFilled)) {
                     this.position = Vector2D.add(finalPos,  new Vector2D(0, -1));
                     return;
                 }

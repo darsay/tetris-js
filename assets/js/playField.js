@@ -4,7 +4,10 @@
 // }
 
 class PlayField {
-    constructor(scoreManager) {
+    constructor(game, scoreManager) {
+        this.game = game;     
+        this.scoreManager = scoreManager;
+
         this.cells = []; // GRID
 
         this.width = PLAYFIELD_WIDTH *  BLOCKSIZE;
@@ -16,7 +19,6 @@ class PlayField {
         this.tetrominoTileResource = new Image();
         this.tetrominoTileResource.src = '/assets/art/minos00.png';
 
-        this.scoreManager = scoreManager;
     }
 
     init() {
@@ -33,7 +35,7 @@ class PlayField {
         }
     }
 
-    draw(ctx) {
+    draw(ctx, isGameOver = false) {
         // Draw Bg
         ctx.save();
 
@@ -44,7 +46,7 @@ class PlayField {
 
         this.drawGrid(ctx);
         
-        this.drawCells(ctx);       
+        this.drawCells(isGameOver);       
     }
     
 
@@ -67,13 +69,13 @@ class PlayField {
         }
     }
    
-    drawCells() {       
+    drawCells(isGameOver = false) {       
         for(let i  = 0; i < PLAYFIELD_HEIGHT; i++) {
             for(let j = 0; j <  PLAYFIELD_WIDTH; j++) {
                 const cell =  this.cells[j][i];
 
                 if (cell.isFilled) {
-                    this.drawCell(j, i, cell.color);
+                    this.drawCell(j, i, isGameOver ? 'gray' : cell.color);
                 }
             }
         }
@@ -97,18 +99,26 @@ class PlayField {
             this.cellSize,
             this.cellSize
         )
-    }
-    
+    }   
 
     placeTetromino(tetrominoController) {
+        let isGameOver = false;
         tetrominoController.blocks.forEach(c => {
             const gridPos = Vector2D.add(c, tetrominoController.position);
 
-            this.cells[gridPos.x][gridPos.y].isFilled = true;
-            this.cells[gridPos.x][gridPos.y].color = tetrominoController.tetromino.color;
+            if(gridPos.y >= 0) {
+                this.cells[gridPos.x][gridPos.y].isFilled = true;
+                this.cells[gridPos.x][gridPos.y].color = tetrominoController.tetromino.color;
+            } else {
+                isGameOver = true;
+            }        
         });
 
-        this.checkLines();
+        if(isGameOver) {
+            this.game.gameOver();
+        } else {
+            this.checkLines();
+        }
     }
 
     checkLines() {

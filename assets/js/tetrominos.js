@@ -5,7 +5,7 @@
 // }
 
 const tetrominoColorsToIdx = {
-    black: 0,
+    gray: 0,
     blue: 1,
     green: 2,
     orange: 3,

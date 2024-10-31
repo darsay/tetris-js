@@ -1,3 +1,5 @@
+
+
 class TetrisGame {
     constructor(ctx, ctxHold, ctxNext) {
         this.ctx = ctx;
@@ -12,7 +14,7 @@ class TetrisGame {
         this.scoreManager = new ScoreManager();
         
         this.tetrominosStack = [];
-        this.playField = new PlayField(this.scoreManager);
+        this.playField = new PlayField(this, this.scoreManager);
         this.tetrominoController = undefined;
         this.currentTetromino = undefined;
 
@@ -29,7 +31,26 @@ class TetrisGame {
             new TetrominoDisplay(2)
         ];
 
+        this.state = STATE_PLAYING;
 
+        this.stateMachine = {
+            STATE_START: {
+                update: this.updateStart.bind(this),
+                draw: this.drawStart.bind(this)
+            },
+            STATE_PLAYING: {
+                update: this.updatePlaying.bind(this),
+                draw: this.drawPlaying.bind(this)
+            },
+            STATE_GAME_OVER: {
+                update: this.updateGameOver.bind(this),
+                draw: this.drawGameOver.bind(this)
+            },
+            STATE_PAUSED: {
+                update: this.updatePaused.bind(this),
+                draw: this.drawPaused.bind(this)
+            }
+        };
     }
 
     start() {
@@ -47,15 +68,22 @@ class TetrisGame {
     }
 
     onKeyDownEvent(e) {
-        this.tetrominoController.onKeyDownEvent(e);
 
-        if(e.keyCode === KEY_C) {
-            this.hold();        
+        if(this.state === STATE_PLAYING) {
+            this.tetrominoController.onKeyDownEvent(e);
+
+            if(e.keyCode === KEY_C) {
+                this.hold();        
+            }
         }
+       
     }
 
     onKeyUpEvent(e) {
-        this.tetrominoController.onKeyUpEvent(e);
+        if(this.state === STATE_PLAYING) {
+            this.tetrominoController.onKeyUpEvent(e);
+        }
+        
     }
 
     gameLoop(timeStamp) {
@@ -78,29 +106,14 @@ class TetrisGame {
     update(deltaTime) {
         this.currentTime += deltaTime;
 
-        this.tetrominoController.update(deltaTime);
+        this.stateMachine[this.state].update(deltaTime);
+
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
-        this.ctxNext.clearRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
 
-        ctxHold.save();
-
-        ctxHold.fillStyle = 'black';
-        ctxHold.fillRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
-        ctxNext.fillRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
-        
-        ctx.restore();
-
-        
-
-        this.playField.draw(this.ctx);
-        this.tetrominoController.draw();
-
-        this.holdedTetrominoDisplay.draw(this.ctxHold);
-        this.nextTetrominoDisplay.forEach(d => d.draw(this.ctxNext));
+        this.stateMachine[this.state].draw();
     }
 
     fillTetrominosStack() {
@@ -125,7 +138,6 @@ class TetrisGame {
         this.tetrominoController.init();
 
         if(this.tetrominosStack.length < 3) {
-            console.log("FILL!");
             this.fillTetrominosStack();
             console.log(this.tetrominosStack);
         }
@@ -162,5 +174,67 @@ class TetrisGame {
         this.holdedTetrominoDisplay.setHoldedTetromino(tetrominoTypes[this.holdedTetromino]);
         SoundManager.playFx('assets/audio/sfx/hold.ogg');
     }
+
+    gameOver() {
+        console.log("GAME OVER");
+        this.state = STATE_GAME_OVER;
+    }
+
+    //STATES
+
+    //START STATE////////////////
+
+    updateStart(deltaTime) {
+    
+    }
+
+    drawStart() {
+
+    }
+
+    /////////////////////////////////
+
+    //PLAYING STATE////////////////
+
+    updatePlaying(deltaTime) {
+        this.tetrominoController.update(deltaTime);
+    }
+
+    drawPlaying() {
+        this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        this.ctxNext.clearRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
+
+        ctxHold.save();
+
+        ctxHold.fillStyle = 'black';
+        ctxHold.fillRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        ctxNext.fillRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
+        
+        ctx.restore();
+
+        this.playField.draw(this.ctx);
+        this.tetrominoController.draw();
+
+        this.holdedTetrominoDisplay.draw(this.ctxHold);
+        this.nextTetrominoDisplay.forEach(d => d.draw(this.ctxNext));
+    }
+
+    /////////////////////////////////
+
+    //PAUSED STATE////////////////
+    updatePaused(deltaTime) {
+    }
+    drawPaused() {
+    }
+    /////////////////////////////////
+
+    //GAME OVER STATE////////////////
+    updateGameOver(deltaTime) {
+
+    }
+    drawGameOver() {
+        this.playField.draw(this.ctx, true);
+    }
+    /////////////////////////////////
 
 }

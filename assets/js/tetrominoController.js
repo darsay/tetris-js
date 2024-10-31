@@ -22,12 +22,50 @@ class TetrominoController {
     }
 
     init() {
-        this.position = new Vector2D((PLAYFIELD_WIDTH / 2) - 1, 1);
-        this.blocks = this.tetromino.rotations[0];
+       
+
+        this.spawnTetromino();
 
         this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
         this.ghostedTetromino.updatePosition();
         this.currentTime = 0;
+    }
+
+    spawnTetromino() {
+        this.blocks = this.tetromino.rotations[0];
+    
+        this.position = new Vector2D((PLAYFIELD_WIDTH / 2) - 1, 1);
+
+        let canPlaceAtOne = true;
+
+        this.blocks.forEach(c => {
+            const gridPos = Vector2D.add(c, this.position);
+
+            
+            if(gridPos.y >= 0 && this.playfield.cells[gridPos.x][gridPos.y].isFilled) {
+                canPlaceAtOne = false;
+            }    
+        });
+
+        if(!canPlaceAtOne) {
+            this.position = new Vector2D((PLAYFIELD_WIDTH / 2) - 1, 0);
+
+            let isGameOver = false;
+
+            this.blocks.forEach(c => {
+                const gridPos = Vector2D.add(c, this.position);
+    
+                
+                if(gridPos.y >= 0 && this.playfield.cells[gridPos.x][gridPos.y].isFilled) {
+                    isGameOver = true;
+                }    
+            });
+
+            if(isGameOver) {
+                this.game.gameOver();
+            }
+        }
+
     }
 
     draw() {
@@ -126,7 +164,6 @@ class TetrominoController {
 
             if(
                 nextPos.x < 0 ||
-                nextPos.y < 0 ||
                 nextPos.x > PLAYFIELD_WIDTH - 1 ||
                 nextPos.y > PLAYFIELD_HEIGHT - 1 ||
                 this.playfield.cells[nextPos.x][nextPos.y].isFilled
@@ -152,7 +189,7 @@ class TetrominoController {
             const gridPos = Vector2D.add(this.blocks[i], this.position);
             const nextPos = new Vector2D(gridPos.x - 1, gridPos.y);
 
-            if(nextPos.x < 0 || this.playfield.cells[nextPos.x][nextPos.y].isFilled) {
+            if(gridPos.y >= 0 && (nextPos.x < 0 || this.playfield.cells[nextPos.x][nextPos.y].isFilled)) {
                 return false;
             }
         }
@@ -174,7 +211,7 @@ class TetrominoController {
             const gridPos = Vector2D.add(this.blocks[i], this.position);
             const nextPos = new Vector2D(gridPos.x + 1, gridPos.y);
 
-            if(nextPos.x > PLAYFIELD_WIDTH - 1 || this.playfield.cells[nextPos.x][nextPos.y].isFilled) {
+            if(gridPos.y >= 0 && (nextPos.x > PLAYFIELD_WIDTH - 1 || this.playfield.cells[nextPos.x][nextPos.y].isFilled)) {
                 return false;
             }
         }
@@ -206,6 +243,7 @@ class TetrominoController {
 
     moveDown() {
         this.position.y++;
+        this.currentTime = 0;
     }
 
     placeTetromino(isDrop = false) {
@@ -222,9 +260,7 @@ class TetrominoController {
         this.position = this.ghostedTetromino.position;
         this.placeTetromino(true);
         this.game.updateTetrominoFromStack();
-
-       
-
+    
         SoundManager.playFx('assets/audio/sfx/drop.ogg');
     }
 }

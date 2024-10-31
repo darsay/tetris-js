@@ -1,8 +1,94 @@
-#game-canvas{
-    background-color: black;
+/* General layout styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222;
+    color: #fff;
+    margin: 0;
 }
 
-#all-canvas-container{
+#tetris-container {
     display: flex;
-    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Column styling */
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Panel styling (for Hold, Next, and Score sections) */
+.panel {
+    background-color: #444;
+    padding: 10px;
+    width: 125px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+#game-container {
+    width: 250px;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Game and Canvas Backgrounds */
+#game-canvas, #hold-canvas, #next-canvas {
+    background-color: #111;
+    border: 2px solid #666;
+    border-radius: 5px;
+}
+
+#game-canvas {
+    width: 250px;
+    height: 500px;
+}
+
+#hold-canvas, #next-canvas {
+    width: 100%;
+}
+
+/* Title Styling */
+.panel-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #ddd;
+    margin-bottom: 8px;
+}
+
+/* Score and Line Styling */
+.score-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #f8e71c; /* Bright gold color */
+    background-color: #000; /* Black background */
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+/* Vivid Colors for Panel Titles */
+#hold-container .panel-title {
+    color: white;
+}
+
+#next-tetrominos-container .panel-title {
+    color: white;
+}
+
+#score-container .panel-title {
+    color: white;
 }

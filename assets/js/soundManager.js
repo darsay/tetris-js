@@ -1,6 +1,6 @@
 class SoundManager {
     static currentSong = undefined;
-    static songVolume = 0.2;
+    static songVolume = 0.0;
     static sfxVolume = 0.4;
 
     static sfxMap = {};

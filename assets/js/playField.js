@@ -4,7 +4,7 @@
 // }
 
 class PlayField {
-    constructor() {
+    constructor(scoreManager) {
         this.cells = []; // GRID
 
         this.width = PLAYFIELD_WIDTH *  BLOCKSIZE;
@@ -15,6 +15,8 @@ class PlayField {
 
         this.tetrominoTileResource = new Image();
         this.tetrominoTileResource.src = '/assets/art/minos00.png';
+
+        this.scoreManager = scoreManager;
     }
 
     init() {
@@ -134,6 +136,7 @@ class PlayField {
             linesToClear.forEach(l => this.updateCellsAfterLine(l));
 
             SoundManager.playFx('assets/audio/sfx/line.ogg');
+            this.scoreManager.updateScoreByLines(linesToClear.length);
         }
     }
 

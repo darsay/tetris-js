@@ -80,6 +80,7 @@ class TetrominoController {
                         this.game.updateTetrominoFromStack();
                     } else {
                         this.moveDown();
+                        this.game.scoreManager.updateScore(1);
                     }
                 break;
             case KEY_SPACE:
@@ -162,6 +163,9 @@ class TetrominoController {
 
         this.position.x--;
         this.ghostedTetromino.updatePosition();
+
+        SoundManager.playFx('assets/audio/sfx/move.ogg');
+
         return true;
     }
 
@@ -175,12 +179,14 @@ class TetrominoController {
             }
         }
 
-        this.position.x++;
-        this.ghostedTetromino.updatePosition();
-
         if(!this.canMoveDown()) {
             this.currentTime = 0;
         }
+
+        this.position.x++;
+        this.ghostedTetromino.updatePosition();     
+
+        SoundManager.playFx('assets/audio/sfx/move.ogg');
 
         return true;
     }
@@ -211,9 +217,13 @@ class TetrominoController {
     }
 
     drop() {
+        this.game.scoreManager.updateScore((this.ghostedTetromino.position.y - this.position.y) * 2);
+
         this.position = this.ghostedTetromino.position;
-        this.placeTetromino();
+        this.placeTetromino(true);
         this.game.updateTetrominoFromStack();
+
+       
 
         SoundManager.playFx('assets/audio/sfx/drop.ogg');
     }

@@ -8,9 +8,11 @@ class TetrisGame {
         this.previousDrawTime = 0;
 
         this.isRunning = false;
+
+        this.scoreManager = new ScoreManager();
         
         this.tetrominosStack = [];
-        this.playField = new PlayField(this.ctx);
+        this.playField = new PlayField(this.scoreManager);
         this.tetrominoController = undefined;
         this.currentTetromino = undefined;
 
@@ -26,6 +28,8 @@ class TetrisGame {
             new TetrominoDisplay(1),
             new TetrominoDisplay(2)
         ];
+
+
     }
 
     start() {
@@ -127,8 +131,6 @@ class TetrisGame {
         }
    
         this.alreadyHolded = false;
-
-        console.log(this.tetrominosStack);
 
         for(let i = 0; i < this.nextTetrominoDisplay.length; i++) {
             this.nextTetrominoDisplay[i].setHoldedTetromino(

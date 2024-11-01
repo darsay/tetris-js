@@ -1,6 +1,6 @@
 class SoundManager {
     static currentSong = undefined;
-    static songVolume = 0.0;
+    static songVolume = 0.1;
     static sfxVolume = 0.4;
 
     static sfxMap = {};
@@ -15,6 +15,12 @@ class SoundManager {
             this.currentSong.volume = this.songVolume;
             this.currentSong.play();
         } 
+    }
+
+    static stopSong() {
+        if(this.currentSong) {
+            this.currentSong.pause();
+        }
     }
 
     static playFx(src) {

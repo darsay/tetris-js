@@ -9,21 +9,18 @@ class TetrominoController {
 
         this.inputRate = 0.3;
         this.currentTime = 0;
-        this.timeToFall = 2;
+        this.timeToFall = 0;
+        this.timeToPlace = 0.5;
 
         this.isRotationRightPressed = false;
         this.isRotationLeftPressed = false;
         this.isHoldPressed = false;
         this.isDownPressed = false;
         this.isDropPressed  = false;
-
-
-        
     }
 
     init() {
-       
-
+        this.timeToFall = this.updateTimeToFall(0);
         this.spawnTetromino();
 
         this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
@@ -80,14 +77,16 @@ class TetrominoController {
     update(deltatime) {
         this.currentTime += deltatime;
 
-        if(this.currentTime > this.timeToFall) {
-            this.currentTime = 0;          
-
-            if(!this.canMoveDown()) {
+        if(this.canMoveDown()) {
+            if(this.currentTime > this.timeToFall) {
+                this.currentTime = 0;
+                this.moveDown();
+            }
+        } else {
+            if(this.currentTime > this.timeToPlace) {
+                this.currentTime = 0;
                 this.placeTetromino();
                 this.game.updateTetrominoFromStack();
-            } else {
-                this.moveDown();
             }
         }
     }
@@ -162,13 +161,22 @@ class TetrominoController {
         for(let i = 0; i < this.tetromino.rotations[tempRotation].length; i++) {
             const nextPos = Vector2D.add(this.tetromino.rotations[tempRotation][i], this.position);
 
+
             if(
-                nextPos.x < 0 ||
+                nextPos.y >= 0 &&
+                (nextPos.x < 0 ||
                 nextPos.x > PLAYFIELD_WIDTH - 1 ||
                 nextPos.y > PLAYFIELD_HEIGHT - 1 ||
-                this.playfield.cells[nextPos.x][nextPos.y].isFilled
+                this.playfield.cells[nextPos.x][nextPos.y].isFilled)
             ) {
                 return false;
+            }
+        }
+
+        if(!this.canMoveDown()) {
+            this.currentTime -= this.timeToPlace /4;
+            if(this.currentTime < 0) {
+                this.currentTime = 0;
             }
         }
 
@@ -262,5 +270,9 @@ class TetrominoController {
         this.game.updateTetrominoFromStack();
     
         SoundManager.playFx('assets/audio/sfx/drop.ogg');
+    }
+
+    updateTimeToFall(level) {
+        return 1 / (G_TABLE[level] * FRAME_RATE);
     }
 }

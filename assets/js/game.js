@@ -11,7 +11,7 @@ class TetrisGame {
 
         this.isRunning = false;
 
-        this.scoreManager = new ScoreManager();
+        this.scoreManager = new ScoreManager(this);
         
         this.tetrominosStack = [];
         this.playField = new PlayField(this, this.scoreManager);
@@ -22,6 +22,10 @@ class TetrisGame {
         this.alreadyHolded = false;
 
         this.currentTime = 0;
+        this.maxCountDownNumber = 3;
+        this.countDownNumber = this.maxCountDownNumber;
+        this.timeIntervalInCountDown = 1000;
+        this.countDownInterval = undefined;
 
         this.holdedTetrominoDisplay = new TetrominoDisplay(0);
 
@@ -30,8 +34,7 @@ class TetrisGame {
             new TetrominoDisplay(1),
             new TetrominoDisplay(2)
         ];
-
-        this.state = STATE_PLAYING;
+        
 
         this.stateMachine = {
             STATE_START: {
@@ -39,16 +42,24 @@ class TetrisGame {
                 draw: this.drawStart.bind(this)
             },
             STATE_PLAYING: {
+                enterState: this.enterStatePlaying.bind(this),
                 update: this.updatePlaying.bind(this),
                 draw: this.drawPlaying.bind(this)
             },
             STATE_GAME_OVER: {
+                enterState:  this.enterStateGameOver.bind(this),
                 update: this.updateGameOver.bind(this),
                 draw: this.drawGameOver.bind(this)
             },
             STATE_PAUSED: {
+                enterState:  this.enterStatePaused.bind(this),
                 update: this.updatePaused.bind(this),
                 draw: this.drawPaused.bind(this)
+            },
+            STATE_COUNTDOWN: {
+                enterState: this.enterStateCountDown.bind(this),
+                update: this.updateCountDown.bind(this),
+                draw: this.drawCountDown.bind(this)
             }
         };
     }
@@ -61,8 +72,9 @@ class TetrisGame {
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
 
-        SoundManager.setSong('assets/audio/music/tetris.mp3') ; 
-        SoundManager.playSong();
+        this.changeState(STATE_COUNTDOWN);
+
+        SoundManager.setSong('assets/audio/music/tetris.mp3');
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
@@ -75,6 +87,10 @@ class TetrisGame {
             if(e.keyCode === KEY_C) {
                 this.hold();        
             }
+        }
+
+        if(e.keyCode === KEY_ESC) {
+            this.togglePause();
         }
        
     }
@@ -176,11 +192,32 @@ class TetrisGame {
     }
 
     gameOver() {
-        console.log("GAME OVER");
-        this.state = STATE_GAME_OVER;
+        this.changeState(STATE_GAME_OVER);
+    }
+
+    levelUp(level) {
+        const newTimeToFall = this.tetrominoController.timeToFall
+        this.tetrominoController.updateTimeToFall(level)
+    }
+
+    togglePause() {
+        if(this.state == STATE_PLAYING) {
+            this.changeState(STATE_PAUSED);
+        } else if(this.state == STATE_PAUSED) {
+            this.changeState(STATE_COUNTDOWN);
+        }
     }
 
     //STATES
+
+    changeState(state) {
+        if(state === this.state) return;
+
+        this.state = state;
+        if(this.stateMachine[this.state].enterState) {
+            this.stateMachine[this.state].enterState();
+        }
+    }
 
     //START STATE////////////////
 
@@ -194,7 +231,46 @@ class TetrisGame {
 
     /////////////////////////////////
 
+    //COUNT DOWN STATE////////////////
+
+    enterStateCountDown() {
+        this.countDownInterval = setInterval(() => {
+            this.countDownNumber--;
+            if(this.countDownNumber < 0) {
+                this.changeState(STATE_PLAYING);
+                this.countDownNumber = this.maxCountDownNumber;
+                clearInterval(this.countDownInterval);
+            }
+        },
+        1000);
+    }
+
+    updateCountDown(deltaTime) {
+    
+    }
+
+    drawCountDown() {
+        this.ctx.save();
+        ctx.font = '50px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        if(this.countDownNumber > 0) {
+            ctx.fillText(this.countDownNumber, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        }
+        else {
+            ctx.fillText('GO!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        }
+    }
+
+    /////////////////////////////////
+
     //PLAYING STATE////////////////
+
+    enterStatePlaying() {
+        SoundManager.playSong();
+    }
 
     updatePlaying(deltaTime) {
         this.tetrominoController.update(deltaTime);
@@ -222,13 +298,35 @@ class TetrisGame {
     /////////////////////////////////
 
     //PAUSED STATE////////////////
-    updatePaused(deltaTime) {
+    enterStatePaused() {
+        SoundManager.stopSong();
     }
+
+    updatePaused(deltaTime) {        
+    }
+
     drawPaused() {
+        this.ctx.save();
+        ctx.font = '50px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        ctx.fillText('Pause', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        ctx.font = '10px Arial';
+        ctx.fillText('Press ESC to resume', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+
+        this.ctx.restore();
     }
     /////////////////////////////////
 
     //GAME OVER STATE////////////////
+
+    enterStateGameOver() {
+        SoundManager.stopSong();
+    }
+
     updateGameOver(deltaTime) {
 
     }

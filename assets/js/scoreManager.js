@@ -1,5 +1,7 @@
 class ScoreManager {
-    constructor() {
+    constructor(game) {
+        this.game = game;
+
         this.score = 0;
         this.level = 0;
 
@@ -35,9 +37,10 @@ class ScoreManager {
         if(this.levelLineCount >= this.linesPerLevel) {
             this.level++;
             this.levelLineCount -= this.linesPerLevel;
-            console.log(`Level Up: ${this.level}`);
 
             this.levelText.innerText = this.level + 1;
+
+            this.game.levelUp(this.level);
         }
 
         this.linesText.innerText = this.totalLineCount;

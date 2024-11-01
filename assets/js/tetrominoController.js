@@ -20,7 +20,7 @@ class TetrominoController {
     }
 
     init() {
-        this.timeToFall = this.updateTimeToFall(0);
+        this.updateTimeToFall(this.game.scoreManager.level);
         this.spawnTetromino();
 
         this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
@@ -273,6 +273,6 @@ class TetrominoController {
     }
 
     updateTimeToFall(level) {
-        return 1 / (G_TABLE[level] * FRAME_RATE);
+        this.timeToFall = 1 / (G_TABLE[level] * FRAME_RATE);
     }
 }

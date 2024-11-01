@@ -1,3 +1,8 @@
+//ASSETS
+const ART_PATH = '/assets/art';
+const LOGO_IMAGE = ART_PATH + '/Tetrisjs_logo.png';
+
+// FPS
 const FRAME_RATE = 60;
 
 

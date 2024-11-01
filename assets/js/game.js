@@ -29,6 +29,9 @@ class TetrisGame {
 
         this.holdedTetrominoDisplay = new TetrominoDisplay(0);
 
+        this.logoImage = new Image();
+        this.logoImage.src = LOGO_IMAGE;
+
         this.nextTetrominoDisplay = [
             new TetrominoDisplay(0),
             new TetrominoDisplay(1),
@@ -72,7 +75,7 @@ class TetrisGame {
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
 
-        this.changeState(STATE_COUNTDOWN);
+        this.changeState(STATE_START);
 
         SoundManager.setSong('assets/audio/music/tetris.mp3');
 
@@ -80,6 +83,12 @@ class TetrisGame {
     }
 
     onKeyDownEvent(e) {
+
+        if(this.state === STATE_START) {
+            if(e.keyCode === KEY_SPACE) {
+                this.changeState(STATE_COUNTDOWN);       
+            }
+        }
 
         if(this.state === STATE_PLAYING) {
             this.tetrominoController.onKeyDownEvent(e);
@@ -155,7 +164,6 @@ class TetrisGame {
 
         if(this.tetrominosStack.length < 3) {
             this.fillTetrominosStack();
-            console.log(this.tetrominosStack);
         }
    
         this.alreadyHolded = false;
@@ -196,7 +204,8 @@ class TetrisGame {
     }
 
     levelUp(level) {
-        const newTimeToFall = this.tetrominoController.timeToFall
+        level = level > G_TABLE.length - 1 ? G_TABLE.length - 1 : level;
+        
         this.tetrominoController.updateTimeToFall(level)
     }
 
@@ -226,7 +235,25 @@ class TetrisGame {
     }
 
     drawStart() {
+        this.ctx.save();
+        
+        const imageFactor = 0.2;
 
+        ctx.drawImage(this.logoImage,
+            this.ctx.canvas.width / 2 - this.logoImage.width* imageFactor / 2,
+            50,
+            this.logoImage.width * imageFactor,
+            this.logoImage.height * imageFactor
+        );
+
+        ctx.font = '50px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        ctx.font = '20px Arial';
+        ctx.fillText('Press SPACE to play!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+
+        this.ctx.restore();
     }
 
     /////////////////////////////////

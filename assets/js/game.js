@@ -71,7 +71,7 @@ class TetrisGame {
                 enterState: this.enterStateEnterName.bind(this),
                 update: this.updateEnterName.bind(this),
                 draw: this.drawEnterName.bind(this)
-            }
+            } 
         };
     }
 
@@ -83,7 +83,7 @@ class TetrisGame {
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
 
-        SoundManager.setSong('assets/audio/music/tetris.mp3');
+        SoundManager.setSong(GAME_SONG);
 
         requestAnimationFrame(this.gameLoop.bind(this));
 
@@ -91,7 +91,12 @@ class TetrisGame {
     }
 
     reset() {
+        this.currentTetromino = undefined;
+
         this.tetrominosStack = [];
+        this.holdedTetromino = undefined;
+        this.holdedTetrominoDisplay.setHoldedTetromino(undefined);
+        
         this.playField.init();
 
         this.fillTetrominosStack();
@@ -396,6 +401,10 @@ class TetrisGame {
 
     enterName(e) {
         if(e.keyCode === KEY_ENTER) {
+            if(this.playerName.length === 0) {
+                this.playerName = "NONE";
+            }
+
             this.changeState(STATE_START);
         } else if(e.keyCode === KEY_BACKSPACE) {
             this.playerName = this.playerName.slice(0, -1);

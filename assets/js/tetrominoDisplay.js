@@ -45,7 +45,9 @@ class TetrominoDisplay {
     setHoldedTetromino(tetromino) {
         this.tetromino =  tetromino;
 
-        this.setNewDrawOrigin();
+        if(tetromino) {
+            this.setNewDrawOrigin();
+        }
     }
 
     setNewDrawOrigin() {

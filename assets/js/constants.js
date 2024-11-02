@@ -1,6 +1,25 @@
 //ASSETS
-const ART_PATH = '/assets/art';
+const ASSETS_PATH = '/assets';
+
+//ART
+const ART_PATH = ASSETS_PATH + '/art';
 const LOGO_IMAGE = ART_PATH + '/Tetrisjs_logo.png';
+const MINOS_SPRITESHEET = ART_PATH + '/minos00.png';
+
+//SOUND
+const SOUND_PATH = ASSETS_PATH + '/audio';
+const MUSIC_PATH = SOUND_PATH + '/music';
+const SFX_PATH = SOUND_PATH + '/sfx';
+
+const GAME_SONG = MUSIC_PATH + '/tetris.mp3';
+
+const CAN_NOT_HOLD_SFX = SFX_PATH + '/cantHold.ogg';
+const HOLD_SFX = SFX_PATH + '/hold.ogg';
+const MOVE_SFX = SFX_PATH + '/move.ogg';
+const ROTATE_SFX = SFX_PATH + '/rotate.ogg';
+const DROP_SFX = SFX_PATH + '/drop.ogg';
+const LINE_SFX = SFX_PATH + '/line.ogg';
+const PLACE_SFX = SFX_PATH + '/place.ogg';
 
 // FPS
 const FRAME_RATE = 60;
@@ -23,12 +42,16 @@ const KEY_Z = 90;
 const KEY_C = 67;
 const KEY_ESC = 27;
 
+const KEY_ENTER = 13;
+const KEY_BACKSPACE = 8;
+
 //GAME STATES
 const STATE_START = "STATE_START";
 const STATE_PLAYING = "STATE_PLAYING";
 const STATE_PAUSED = "STATE_PAUSED";
 const STATE_GAME_OVER = "STATE_GAME_OVER";
 const STATE_COUNTDOWN = "STATE_COUNTDOWN";
+const STATE_ENTERNAME = "STATE_ENTERNAME";
 
 // G TABLE
 
@@ -53,3 +76,6 @@ const G_TABLE = [
     /*Level 14 */ FALL_COEFICIENT * 1.46,    
     /*Level 15 */ FALL_COEFICIENT * 2.36
 ]
+
+// HIGH SCORES
+const NAMES_LENGHT_LIMIT = 10;

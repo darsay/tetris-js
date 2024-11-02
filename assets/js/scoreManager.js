@@ -53,5 +53,16 @@ class ScoreManager {
 
         this.scoreText.innerText = this.score;
     }
+
+    reset() {
+        this.score = 0;
+        this.level = 0;
+        this.totalLineCount = 0;
+        this.levelLineCount = 0;
+
+        this.scoreText.innerText = this.score;
+        this.levelText.innerText = this.level + 1;
+        this.linesText.innerText = this.totalLineCount;
+    }
     
 }

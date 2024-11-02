@@ -121,8 +121,10 @@ class TetrominoController {
                     }
                 break;
             case KEY_SPACE:
-                this.isDropPressed = true;
-                this.drop();
+                if(!this.isDropPressed) {
+                    this.isDropPressed = true;
+                    this.drop();
+                }
 
         }
     }
@@ -187,7 +189,7 @@ class TetrominoController {
         this.ghostedTetromino.blocks = this.blocks;
         this.ghostedTetromino.updatePosition();
 
-        SoundManager.playFx('assets/audio/sfx/rotate.ogg');
+        SoundManager.playFx(ROTATE_SFX);
 
         return true;
     }
@@ -209,7 +211,7 @@ class TetrominoController {
         this.position.x--;
         this.ghostedTetromino.updatePosition();
 
-        SoundManager.playFx('assets/audio/sfx/move.ogg');
+        SoundManager.playFx(MOVE_SFX);
 
         return true;
     }
@@ -231,7 +233,7 @@ class TetrominoController {
         this.position.x++;
         this.ghostedTetromino.updatePosition();     
 
-        SoundManager.playFx('assets/audio/sfx/move.ogg');
+        SoundManager.playFx(MOVE_SFX);
 
         return true;
     }
@@ -258,7 +260,7 @@ class TetrominoController {
         this.playfield.placeTetromino(this);
 
         if(!isDrop) {
-            SoundManager.playFx('assets/audio/sfx/place.ogg');
+            SoundManager.playFx(PLACE_SFX);
         }
     }
 
@@ -269,7 +271,7 @@ class TetrominoController {
         this.placeTetromino(true);
         this.game.updateTetrominoFromStack();
     
-        SoundManager.playFx('assets/audio/sfx/drop.ogg');
+        SoundManager.playFx(DROP_SFX);
     }
 
     updateTimeToFall(level) {

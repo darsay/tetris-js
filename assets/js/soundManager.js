@@ -5,14 +5,20 @@ class SoundManager {
 
     static sfxMap = {};
 
+    static sfxEnabled = true;
+    static musicEnabled = true;
+
 
     static setSong(src) {
         this.currentSong = new Audio(src);
     }
 
     static playSong() {
+        if(!this.musicEnabled) return;
+
         if(this.currentSong) {
             this.currentSong.volume = this.songVolume;
+            this.currentSong.loop = true;
             this.currentSong.play();
         } 
     }
@@ -24,6 +30,8 @@ class SoundManager {
     }
 
     static playFx(src) {
+        if(!this.sfxEnabled) return;
+
         if(!this.sfxMap.hasOwnProperty(src)) {
             this.sfxMap[src] = new Audio(src);
         } 
@@ -31,5 +39,19 @@ class SoundManager {
         this.sfxMap[src].volume = this.sfxVolume;
         this.sfxMap[src].currentTime = 0;
         this.sfxMap[src].play();
+    }
+
+    static setSfxEnabled(enabled) {
+        this.sfxEnabled = enabled;
+    }
+
+    static setMusicEnabled(enabled) {
+        this.musicEnabled = enabled;
+        
+        if(enabled) {
+            this.currentSong.volume = this.songVolume;
+        } else {
+            this.currentSong.volume = 0;
+        }
     }
 }

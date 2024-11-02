@@ -92,3 +92,21 @@ body {
 #score-container .panel-title {
     color: white;
 }
+
+#config-container .toggle, #high-scores-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 10px;
+    color: #ddd;
+}
+
+.toggle label {
+    margin-right: 10px;
+}
+
+#config-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}

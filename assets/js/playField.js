@@ -17,7 +17,7 @@ class PlayField {
         this.cellSize = this.width / PLAYFIELD_WIDTH;
 
         this.tetrominoTileResource = new Image();
-        this.tetrominoTileResource.src = '/assets/art/minos00.png';
+        this.tetrominoTileResource.src = MINOS_SPRITESHEET;
 
     }
 
@@ -26,6 +26,7 @@ class PlayField {
     }
 
     initPlayField() {
+        this.cells = [];
         for (let i = 0; i < PLAYFIELD_WIDTH; i++) {
             this.cells.push([]);
             this.cells[i].fill({isFilled : false, color: undefined})
@@ -145,7 +146,7 @@ class PlayField {
         if(linesToClear.length > 0) {
             linesToClear.forEach(l => this.updateCellsAfterLine(l));
 
-            SoundManager.playFx('assets/audio/sfx/line.ogg');
+            SoundManager.playFx(LINE_SFX);
             this.scoreManager.updateScoreByLines(linesToClear.length);
         }
     }

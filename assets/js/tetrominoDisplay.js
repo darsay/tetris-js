@@ -9,7 +9,7 @@ class TetrominoDisplay {
         this.gridTrace = 0.3;
 
         this.tetrominoTileResource = new Image();
-        this.tetrominoTileResource.src = '/assets/art/minos00.png';
+        this.tetrominoTileResource.src = MINOS_SPRITESHEET;
 
         this.tetromino = undefined;
 
@@ -19,8 +19,7 @@ class TetrominoDisplay {
     draw(ctx) {
         if(this.tetromino) {
             this.tetromino.rotations[0].forEach(b => this.drawBlock(ctx, b));
-        }
-        
+        }    
     }
 
     drawBlock(ctx, b) {

@@ -32,6 +32,8 @@ class TetrisGame {
         this.logoImage = new Image();
         this.logoImage.src = LOGO_IMAGE;
 
+        this.playerName = "";
+
         this.nextTetrominoDisplay = [
             new TetrominoDisplay(0),
             new TetrominoDisplay(1),
@@ -41,6 +43,7 @@ class TetrisGame {
 
         this.stateMachine = {
             STATE_START: {
+                enterState: this.enterStateStart.bind(this),
                 update: this.updateStart.bind(this),
                 draw: this.drawStart.bind(this)
             },
@@ -63,6 +66,11 @@ class TetrisGame {
                 enterState: this.enterStateCountDown.bind(this),
                 update: this.updateCountDown.bind(this),
                 draw: this.drawCountDown.bind(this)
+            },
+            STATE_ENTERNAME: {
+                enterState: this.enterStateEnterName.bind(this),
+                update: this.updateEnterName.bind(this),
+                draw: this.drawEnterName.bind(this)
             }
         };
     }
@@ -75,11 +83,19 @@ class TetrisGame {
         this.fillTetrominosStack();
         this.updateTetrominoFromStack();
 
-        this.changeState(STATE_START);
-
         SoundManager.setSong('assets/audio/music/tetris.mp3');
 
         requestAnimationFrame(this.gameLoop.bind(this));
+
+        this.changeState(STATE_START);
+    }
+
+    reset() {
+        this.tetrominosStack = [];
+        this.playField.init();
+
+        this.fillTetrominosStack();
+        this.updateTetrominoFromStack(); 
     }
 
     onKeyDownEvent(e) {
@@ -107,6 +123,10 @@ class TetrisGame {
     onKeyUpEvent(e) {
         if(this.state === STATE_PLAYING) {
             this.tetrominoController.onKeyUpEvent(e);
+        }
+
+        if(this.state === STATE_ENTERNAME) {
+            this.enterName(e);
         }
         
     }
@@ -137,6 +157,8 @@ class TetrisGame {
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
+        this.ctxNext.clearRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
 
         this.stateMachine[this.state].draw();
     }
@@ -179,7 +201,7 @@ class TetrisGame {
 
     hold() {
         if(this.alreadyHolded) {
-            SoundManager.playFx('assets/audio/sfx/cantHold.ogg');
+            SoundManager.playFx(CAN_NOT_HOLD_SFX);
             return;
         }
 
@@ -196,7 +218,7 @@ class TetrisGame {
 
         this.alreadyHolded = true;
         this.holdedTetrominoDisplay.setHoldedTetromino(tetrominoTypes[this.holdedTetromino]);
-        SoundManager.playFx('assets/audio/sfx/hold.ogg');
+        SoundManager.playFx(HOLD_SFX);
     }
 
     gameOver() {
@@ -229,6 +251,10 @@ class TetrisGame {
     }
 
     //START STATE////////////////
+
+    enterStateStart() {
+        this.scoreManager.reset();
+    }
 
     updateStart(deltaTime) {
     
@@ -304,9 +330,6 @@ class TetrisGame {
     }
 
     drawPlaying() {
-        this.ctxHold.clearRect(0, 0, this.ctxHold.canvas.width, this.ctxHold.canvas.height);
-        this.ctxNext.clearRect(0, 0, this.ctxNext.canvas.width, this.ctxNext.canvas.height);
-
         ctxHold.save();
 
         ctxHold.fillStyle = 'black';
@@ -352,6 +375,7 @@ class TetrisGame {
 
     enterStateGameOver() {
         SoundManager.stopSong();
+        this.changeState(STATE_ENTERNAME);
     }
 
     updateGameOver(deltaTime) {
@@ -362,4 +386,42 @@ class TetrisGame {
     }
     /////////////////////////////////
 
+
+    //ENTER NAME STATE////////////////
+
+    enterStateEnterName() {
+       this.playerName = "";
+       this.reset();
+    }
+
+    enterName(e) {
+        if(e.keyCode === KEY_ENTER) {
+            this.changeState(STATE_START);
+        } else if(e.keyCode === KEY_BACKSPACE) {
+            this.playerName = this.playerName.slice(0, -1);
+        }
+        else if(isAlphaNumeric(e.keyCode) && this.playerName.length < NAMES_LENGHT_LIMIT) {
+            this.playerName += e.key.toUpperCase();
+        }
+    }
+
+    updateEnterName(deltaTime) {
+    }
+    
+    drawEnterName() {
+        this.ctx.save();
+        ctx.font = '21px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        ctx.fillText('Enter your name:', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+
+        ctx.font = '20px Arial';
+        ctx.fillText(this.playerName, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+
+        ctx.fillText('Press ENTER to continue', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 150);
+
+        this.ctx.restore();
+    }
 }

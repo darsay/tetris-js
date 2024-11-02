@@ -25,3 +25,17 @@ class Vector2D {
         );
     }
 }
+
+function isAlphaNumeric(code) {
+    return (isNumeric(code) ||
+            isAlpha(code));
+}
+
+function isAlpha(code) {
+    return ((code > 64 && code < 91) || // upper alpha (A-Z)
+            (code > 96 && code < 123));
+}
+
+function isNumeric(code) {
+    return (code > 47 && code < 58); // numeric (0-9)
+}

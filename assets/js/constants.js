@@ -5,6 +5,7 @@ const ASSETS_PATH = './assets/';
 const ART_PATH = ASSETS_PATH + '/art';
 const LOGO_IMAGE = ART_PATH + '/Tetrisjs_logo.png';
 const MINOS_SPRITESHEET = ART_PATH + '/minos00.png';
+const CONTROLS_IMAGE = ART_PATH + '/controls.png';
 
 //SOUND
 const SOUND_PATH = ASSETS_PATH + '/audio';
@@ -20,6 +21,7 @@ const ROTATE_SFX = SFX_PATH + '/rotate.ogg';
 const DROP_SFX = SFX_PATH + '/drop.ogg';
 const LINE_SFX = SFX_PATH + '/line.ogg';
 const PLACE_SFX = SFX_PATH + '/place.ogg';
+const GAME_OVER_SFX = SFX_PATH + '/gameOver.ogg';
 
 // FPS
 const FRAME_RATE = 60;
@@ -78,4 +80,4 @@ const G_TABLE = [
 ]
 
 // HIGH SCORES
-const NAMES_LENGHT_LIMIT = 10;
+const NAMES_LENGHT_LIMIT = 7;

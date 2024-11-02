@@ -32,6 +32,9 @@ class TetrisGame {
         this.logoImage = new Image();
         this.logoImage.src = LOGO_IMAGE;
 
+        this.controlsImage = new Image();
+        this.controlsImage.src = CONTROLS_IMAGE;
+
         this.playerName = "";
 
         this.nextTetrominoDisplay = [
@@ -96,6 +99,10 @@ class TetrisGame {
         this.tetrominosStack = [];
         this.holdedTetromino = undefined;
         this.holdedTetrominoDisplay.setHoldedTetromino(undefined);
+
+        if(this.tetrominoController) {
+            this.tetrominoController.updateTimeToFall(0);
+        }
         
         this.playField.init();
 
@@ -272,7 +279,7 @@ class TetrisGame {
 
         ctx.drawImage(this.logoImage,
             this.ctx.canvas.width / 2 - this.logoImage.width* imageFactor / 2,
-            50,
+            15,
             this.logoImage.width * imageFactor,
             this.logoImage.height * imageFactor
         );
@@ -282,7 +289,29 @@ class TetrisGame {
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         ctx.font = '20px Arial';
-        ctx.fillText('Press SPACE to play!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+        ctx.fillText('Press SPACE to play!', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 50);
+
+        ctx.fillText('HIGH SCORES:', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+
+        let scores = localStorage.getItem('scores') ? JSON.parse(localStorage.getItem('scores')) : [];
+
+        let offset = 100;
+        const increment = 30;
+
+        ctx.font = '15px Arial';
+
+        for(let i = 0; i < 5; i++) {
+            if(i >= scores.length) {
+                break;
+            }
+
+            this.ctx.textAlign = 'left';
+            ctx.fillText(scores[i].name, this.ctx.canvas.width * 0.15, this.ctx.canvas.height / 2 + offset);
+
+            this.ctx.textAlign = 'right';
+            ctx.fillText(scores[i].score, this.ctx.canvas.width * 0.85, this.ctx.canvas.height / 2 + offset);
+            offset += increment;
+        }
 
         this.ctx.restore();
     }
@@ -362,15 +391,32 @@ class TetrisGame {
 
     drawPaused() {
         this.ctx.save();
-        ctx.font = '50px Arial';
+        ctx.font = '25px Arial';
         this.ctx.fillStyle = 'white';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
 
-        ctx.fillText('Pause', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        ctx.fillText('GAME PAUSED', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 35 );
 
-        ctx.font = '10px Arial';
-        ctx.fillText('Press ESC to resume', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
+        ctx.font = '15px Arial';
+        ctx.fillText('Press ESC to resume', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 +  15 );
+
+        const logoImageFactor = 0.2;
+        const controlsImageFactor = 0.22;
+
+        ctx.drawImage(this.logoImage,
+            this.ctx.canvas.width / 2 - this.logoImage.width* logoImageFactor / 2,
+            15,
+            this.logoImage.width * logoImageFactor,
+            this.logoImage.height * logoImageFactor
+        );
+
+        ctx.drawImage(this.controlsImage,
+            this.ctx.canvas.width / 2 - this.logoImage.width* controlsImageFactor / 2,
+            this.ctx.canvas.height - 200,
+            this.logoImage.width * controlsImageFactor,
+            this.logoImage.height * controlsImageFactor
+        );
 
         this.ctx.restore();
     }
@@ -380,6 +426,7 @@ class TetrisGame {
 
     enterStateGameOver() {
         SoundManager.stopSong();
+        SoundManager.playFx(GAME_OVER_SFX);
         this.changeState(STATE_ENTERNAME);
     }
 
@@ -405,6 +452,8 @@ class TetrisGame {
                 this.playerName = "NONE";
             }
 
+            this.submitScore(this.playerName, this.scoreManager.score);
+
             this.changeState(STATE_START);
         } else if(e.keyCode === KEY_BACKSPACE) {
             this.playerName = this.playerName.slice(0, -1);
@@ -424,7 +473,11 @@ class TetrisGame {
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
 
-        ctx.fillText('Enter your name:', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
+        ctx.fillText('Your Score is:', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 150);
+
+        ctx.fillText(this.scoreManager.score, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 100);
+
+        ctx.fillText('TYPE YOUR NAME:', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
 
         ctx.font = '20px Arial';
         ctx.fillText(this.playerName, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
@@ -432,5 +485,17 @@ class TetrisGame {
         ctx.fillText('Press ENTER to continue', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 150);
 
         this.ctx.restore();
+    }
+
+    submitScore(name, score) {
+        let scores = localStorage.getItem('scores') ? JSON.parse(localStorage.getItem('scores')) : [];
+
+        scores.push({
+            name: name,
+            score: score
+        });
+
+        scores.sort((a, b) => b.score - a.score);
+        localStorage.setItem('scores', JSON.stringify(scores));
     }
 }

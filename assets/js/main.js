@@ -27,3 +27,10 @@ window.addEventListener('load', () => {
   sfxToggle.addEventListener('change', (e) => {
         SoundManager.setSfxEnabled(e.target.checked);
   });
+
+  window.onblur = () => {
+    if(game.state === STATE_PLAYING) {
+      game.changeState(STATE_PAUSED);
+    }
+    
+  };

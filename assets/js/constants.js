@@ -1,5 +1,5 @@
 //ASSETS
-const ASSETS_PATH = '../../assets';
+const ASSETS_PATH = 'assets/';
 
 //ART
 const ART_PATH = ASSETS_PATH + '/art';

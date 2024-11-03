@@ -21,7 +21,7 @@ const ROTATE_SFX = SFX_PATH + '/rotate.ogg';
 const DROP_SFX = SFX_PATH + '/drop.ogg';
 const LINE_SFX = SFX_PATH + '/line.ogg';
 const PLACE_SFX = SFX_PATH + '/place.ogg';
-const GAME_OVER_SFX = SFX_PATH + '/gameOver.ogg';
+const GAME_OVER_SFX = SFX_PATH + '/gameOver.wav';
 
 // FPS
 const FRAME_RATE = 60;

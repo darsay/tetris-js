@@ -17,6 +17,8 @@ class TetrominoController {
         this.isHoldPressed = false;
         this.isDownPressed = false;
         this.isDropPressed  = false;
+
+        this.isEnabled = true;
     }
 
     init() {
@@ -26,6 +28,7 @@ class TetrominoController {
         this.ghostedTetromino = new GhostedTetromino(this, this.playfield);
         this.ghostedTetromino.updatePosition();
         this.currentTime = 0;
+        this.isEnabled = true;
     }
 
     spawnTetromino() {
@@ -66,6 +69,8 @@ class TetrominoController {
     }
 
     draw() {
+    if(!this.isEnabled) return;
+
         this.ghostedTetromino.draw();
 
         this.blocks.forEach(c => {
@@ -75,6 +80,8 @@ class TetrominoController {
     }
 
     update(deltatime) {
+        if(!this.isEnabled) return;
+
         this.currentTime += deltatime;
 
         if(this.canMoveDown()) {
@@ -86,12 +93,13 @@ class TetrominoController {
             if(this.currentTime > this.timeToPlace) {
                 this.currentTime = 0;
                 this.placeTetromino();
-                this.game.updateTetrominoFromStack();
             }
         }
     }
 
     onKeyDownEvent(e) {
+        if(!this.isEnabled) return;
+
         switch(e.keyCode) {
             case KEY_LEFT:
                 this.moveLeft();
@@ -114,7 +122,6 @@ class TetrominoController {
             case KEY_DOWN:
                     if(!this.canMoveDown()) {
                         this.placeTetromino();
-                        this.game.updateTetrominoFromStack();
                     } else {
                         this.moveDown();
                         this.game.scoreManager.updateScore(1);
@@ -130,6 +137,8 @@ class TetrominoController {
     }
 
     onKeyUpEvent(e) {
+        if(!this.isEnabled) return;
+
         switch(e.keyCode) {
             case KEY_UP:
                 this.isRotationRightPressed = false;
@@ -176,7 +185,7 @@ class TetrominoController {
         }
 
         if(!this.canMoveDown()) {
-            this.currentTime -= this.timeToPlace /4;
+            this.currentTime -= this.timeToPlace * 0.8;
             if(this.currentTime < 0) {
                 this.currentTime = 0;
             }
@@ -257,6 +266,7 @@ class TetrominoController {
     }
 
     placeTetromino(isDrop = false) {
+        this.isEnabled = false;
         this.playfield.placeTetromino(this);
 
         if(!isDrop) {
@@ -269,7 +279,6 @@ class TetrominoController {
 
         this.position = this.ghostedTetromino.position;
         this.placeTetromino(true);
-        this.game.updateTetrominoFromStack();
     
         SoundManager.playFx(DROP_SFX);
     }

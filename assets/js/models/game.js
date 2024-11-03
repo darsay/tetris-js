@@ -427,7 +427,10 @@ class TetrisGame {
     enterStateGameOver() {
         SoundManager.stopSong();
         SoundManager.playFx(GAME_OVER_SFX);
-        this.changeState(STATE_ENTERNAME);
+
+        setTimeout(() => {
+            this.changeState(STATE_ENTERNAME);
+        }, 2000);
     }
 
     updateGameOver(deltaTime) {

@@ -19,6 +19,9 @@ class PlayField {
         this.tetrominoTileResource = new Image();
         this.tetrominoTileResource.src = MINOS_SPRITESHEET;
 
+        this.lineAnimationInterval = undefined;
+
+        this.animCells = [];
     }
 
     init() {
@@ -48,6 +51,8 @@ class PlayField {
         this.drawGrid(ctx);
         
         this.drawCells(isGameOver);       
+
+        this.drawAnimationCells();
     }
     
 
@@ -123,7 +128,6 @@ class PlayField {
     }
 
     checkLines() {
-        let lineCount = 0;
         const linesToClear = [];
 
         for(let i = 0; i < PLAYFIELD_HEIGHT; i++) {
@@ -138,17 +142,46 @@ class PlayField {
 
             if(isLineFull) {
                 linesToClear.push(i);
-                this.clearLine(i);
-                lineCount++;
             }
         }
 
         if(linesToClear.length > 0) {
-            linesToClear.forEach(l => this.updateCellsAfterLine(l));
-
             SoundManager.playFx(LINE_SFX);
             this.scoreManager.updateScoreByLines(linesToClear.length);
+            this.lineAnimation(linesToClear);
+        } else {
+            this.game.updateTetrominoFromStack();
         }
+    }
+
+    lineAnimation(linesToClear) {      
+        let counter = 0;
+        let animationFinished = false;
+
+        this.lineAnimationInterval = setInterval(() => {
+            if(5 + counter < PLAYFIELD_WIDTH) {
+                linesToClear.forEach(l => {
+                    this.animCells.push(new Vector2D(5+counter, l));
+                    this.animCells.push(new Vector2D(5-counter-1, l));
+                   }
+                );
+            } else {
+                clearInterval(this.lineAnimationInterval); 
+
+                setTimeout(() => {
+                    linesToClear.forEach(l => this.clearLine(l));
+                    linesToClear.forEach(l => this.updateCellsAfterLine(l));
+                    this.game.updateTetrominoFromStack();
+                    this.animCells = [];
+                    
+                }, 100);
+            }
+            counter++;    
+        }, 75);
+    }
+
+    drawAnimationCells() {
+        this.animCells.forEach(c => this.drawCell(c.x, c.y, 'gray', true));
     }
 
     clearLine(line) {

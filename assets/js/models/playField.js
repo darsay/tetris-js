@@ -177,7 +177,7 @@ class PlayField {
                 }, 100);
             }
             counter++;    
-        }, 75);
+        }, 35);
     }
 
     drawAnimationCells() {

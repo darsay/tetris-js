@@ -11,6 +11,7 @@ class TetrominoController {
         this.currentTime = 0;
         this.timeToFall = 0;
         this.timeToPlace = 0.5;
+        this.previousCanFallState = true; 
 
         this.isRotationRightPressed = false;
         this.isRotationLeftPressed = false;
@@ -19,6 +20,7 @@ class TetrominoController {
         this.isDropPressed  = false;
 
         this.isEnabled = true;
+        this.opacity = 100;
     }
 
     init() {
@@ -75,7 +77,7 @@ class TetrominoController {
 
         this.blocks.forEach(c => {
             const gridPos = Vector2D.add(c, this.position);
-            this.playfield.drawCell(gridPos.x, gridPos.y, this.tetromino.color);
+            this.playfield.drawCell(gridPos.x, gridPos.y, this.tetromino.color, false, this.opacity);
         });
     }
 
@@ -83,13 +85,31 @@ class TetrominoController {
         if(!this.isEnabled) return;
 
         this.currentTime += deltatime;
+        
+        
 
         if(this.canMoveDown()) {
+            this.opacity = 1;
+
+            if(!this.previousCanFallState) {
+                this.currentTime = 0;
+                this.previousCanFallState = true;
+            }
+
             if(this.currentTime > this.timeToFall) {
                 this.currentTime = 0;
                 this.moveDown();
             }
         } else {
+
+            if(this.previousCanFallState) {
+                this.currentTime = 0;
+                this.previousCanFallState = false;
+            }
+
+            const progress = Math.min(this.currentTime / this.timeToPlace, 1);
+            this.opacity = (Math.cos(progress * Math.PI) + 1) / 2;
+
             if(this.currentTime > this.timeToPlace) {
                 this.currentTime = 0;
                 this.placeTetromino();
@@ -213,9 +233,13 @@ class TetrominoController {
             }
         }
 
-        if(!this.canMoveDown()) {
+        const canFall = this.canMoveDown();
+
+        if(!canFall || !this.previousCanFallState) {
             this.currentTime = 0;
         }
+
+        this.previousCanFallState = canFall;
 
         this.position.x--;
         this.ghostedTetromino.updatePosition();
@@ -235,9 +259,13 @@ class TetrominoController {
             }
         }
 
-        if(!this.canMoveDown()) {
+        const canFall = this.canMoveDown();
+
+        if(!canFall || !this.previousCanFallState) {
             this.currentTime = 0;
         }
+
+        this.previousCanFallState = canFall;
 
         this.position.x++;
         this.ghostedTetromino.updatePosition();     
@@ -261,6 +289,8 @@ class TetrominoController {
     }
 
     moveDown() {
+        this.previousCanFallState = this.canMoveDown();
+
         this.position.y++;
         this.currentTime = 0;
     }

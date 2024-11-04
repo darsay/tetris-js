@@ -87,13 +87,17 @@ class PlayField {
         }
     }
 
-    drawCell(x, y, color, isGhosted = false) {
+    drawCell(x, y, color, isGhosted = false, opacity = 1) {
         const tileSize = 48;
         const margin = 4;
 
         const cell =  this.cells[x][y];
 
         const initialY = isGhosted ? margin*5 + tileSize*2 : margin;
+
+        ctx.save();
+
+        ctx.globalAlpha = opacity;
 
         ctx.drawImage(this.tetrominoTileResource,
             margin + (margin*2 + tileSize) * tetrominoColorsToIdx[color],
@@ -105,6 +109,8 @@ class PlayField {
             this.cellSize,
             this.cellSize
         )
+
+        ctx.restore();
     }   
 
     placeTetromino(tetrominoController) {
